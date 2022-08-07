@@ -2,6 +2,7 @@
 """ Console Module """
 import cmd
 import sys
+from unittest import result
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -10,8 +11,8 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-
-
+from sys import exit
+from re import search
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
@@ -73,8 +74,8 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is'}'\
-                            and type(eval(pline)) is dict:
+                    if pline[0] == '{' and pline[-1] =='}'\
+                            and type(eval(pline)) == dict:
                         _args = pline
                     else:
                         _args = pline.replace(',', '')
@@ -118,11 +119,47 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+        print(args)
+        regex_dict = {
+            'State': [r"(name)=(\"?[a-zA-Z]+\"?) ?.+?", 2],
+            'City': [r"(?:(state_id)=(\"?.+\"?))? ?(?:(name)=(\"?[a-zA-Z]+\"?))? ?.+?", 4]
+        }
+            # state_id = ""
+            # name = ""
+        regex = r"^([a-zA-Z]+) ?(.+)?"
+        result = search(regex, args)
+        kwargs = {}
+        if (result):
+            cls_name = result.group(1)
+            params = result.group(2)
+            if (cls_name not in HBNBCommand.classes):
+                print("** class doesn't exist **")
+                return
+            if (params):
+                re = regex_dict[cls_name]
+                res = search(re[0], params.strip())
+                if (res):    
+                    for i in range(1, re[1], 2):
+                        try:   
+                            kwargs.update({res.group(i): res.group(i + 1).strip().replace('"',"")})
+                        except:
+                            pass
+                print(kwargs)             
+            # params = result.group(2)
+
+            # print(params.strip())
+            # print(cls_name)
+        else:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
+        # exit()
+
+        # elif args not in HBNBCommand.classes:
+        #     print("** class doesn't exist **")
+        #     return
+        new_instance = HBNBCommand.classes[cls_name]()
         storage.save()
+        new_instance.__dict__.update(**kwargs)
         print(new_instance.id)
         storage.save()
 
@@ -272,7 +309,7 @@ class HBNBCommand(cmd.Cmd):
                 args.append(v)
         else:  # isolate args
             args = args[2]
-            if args and args[0] is '\"':  # check for quoted arg
+            if args and args[0] == '\"':  # check for quoted arg
                 second_quote = args.find('\"', 1)
                 att_name = args[1:second_quote]
                 args = args[second_quote + 1:]
@@ -280,10 +317,10 @@ class HBNBCommand(cmd.Cmd):
             args = args.partition(' ')
 
             # if att_name was not quoted arg
-            if not att_name and args[0] is not ' ':
+            if not att_name and args[0] != ' ':
                 att_name = args[0]
             # check for quoted val arg
-            if args[2] and args[2][0] is '\"':
+            if args[2] and args[2][0] == '\"':
                 att_val = args[2][1:args[2].find('\"', 1)]
 
             # if att_val was not quoted arg
