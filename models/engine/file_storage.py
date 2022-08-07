@@ -20,15 +20,18 @@ class FileStorage:
             for key, val in temp.items():
                 temp[key] = val.to_dict()
             json.dump(temp, f)
+
     def delete(self, cls=None):
-        if (cls):    
+        """Deletes a instance"""
+        if (cls):
             FileStorage.__objects.pop(f"{cls.__class__.__name__}.{cls.id}")
-            
+
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
         if (cls):
             N = cls.__name__
-            d = list(filter(lambda x : x.__class__.__name__ == N, FileStorage.__objects.values()))
+            d = list(filter(lambda x: x.__class__.__name__ == N,
+                            FileStorage.__objects.values()))
             return {f"{N}.{i.id}": i for i in d}
         return FileStorage.__objects
 
@@ -52,6 +55,6 @@ class FileStorage:
             with open(FileStorage.__file_path, 'r') as f:
                 temp = json.load(f)
                 for key, val in temp.items():
-                        self.all()[key] = classes[val['__class__']](**val)
+                    self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
