@@ -12,7 +12,8 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 from sys import exit
-from re import search
+#from re import search
+import re
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
@@ -120,14 +121,25 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         print(args)
+        name=re.compile("((?:first_|last_)name)=(\"?[a-zA-Z]+_?[a-zA-z]+\"?) ?.+?")
+        idi=re.compile("((?:state|city|user|place)_id)=(\"?.+\"?) ?.+?")
+        description = re.compile("(password|description|text)=(\"?.+\"?) ?.+?")
+        num = re.compile("(number_(?:rooms|bathrooms))=(\"?\d+\"?) ?.+?")
+        guest = re.compile("(max_guest)=(\"?\d+\"?) ?.+?")
+        price = re.compile("(price_by_night)=(\"?\d+\"?) ?.+?")
+        lat_lon = re.compile("(latitude|longitude)=(-?[0-9]+\.[0-9]+) ?.+?")
+        email=re.compile("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
         regex_dict = {
-            'State': [r"(name)=(\"?[a-zA-Z]+\"?) ?.+?"],
-            'City': [r"(state_id)=(\"?.+\"?) ?.+?", r"(name)=(\"?[a-zA-Z]+\"?)? ?.+?"]
+            'State': [name],
+            'City': [idi, name],
+            'Place': [idi, name, description, num, guest, price, lat_lon],
+            'Amenity': [name],
+            'Review' : [idi, description],
+            'User' : [email, description, name]
+
         }
-            # state_id = ""
-            # name = ""
         regex = r"^([a-zA-Z]+) ?(.+)?"
-        result = search(regex, args)
+        result = re.search(regex, args)
         kwargs = {}
         if (result):
             cls_name = result.group(1)
@@ -137,13 +149,14 @@ class HBNBCommand(cmd.Cmd):
                 return
             if (params):
                 #print(params.split(" "))
-                re = regex_dict[cls_name]
+                res = regex_dict[cls_name]
                 #res = search(re[0], params.strip())
                 for i in params.split(" "):
-                    for j in re:
-                        attr = search(j, i)
+                    for j in res:
+                        attr = j.search(i)
                         if (attr):
-                            kwargs.update({attr.group(1):attr.group(2).replace('"', "")})
+                            kwargs.update({attr.group(1):attr.group(2).replace('"', "").replace("_", " ")})
+                            break
                 # if (res):    
                 #     for i in range(1, re[1], 2):
                 #         try:   
