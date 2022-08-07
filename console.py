@@ -150,8 +150,9 @@ class HBNBCommand(cmd.Cmd):
             if (params):
                 res = regex_dict[cls_name]
                 for i in params.split(" "):
+                    print(i.replace('"', ""))
                     for j in res:
-                        attr = j.search(i)
+                        attr = j.search(i.replace('"', ""))
                         if (attr):
                             kwargs.update({attr.group(1):attr.group(2).replace('"', "").replace("_", " ")})
                             break
