@@ -121,8 +121,8 @@ class HBNBCommand(cmd.Cmd):
             return
         print(args)
         regex_dict = {
-            'State': [r"(name)=(\"?[a-zA-Z]+\"?) ?.+?", 2],
-            'City': [r"(?:(state_id)=(\"?.+\"?))? ?(?:(name)=(\"?[a-zA-Z]+\"?))? ?.+?", 4]
+            'State': [r"(name)=(\"?[a-zA-Z]+\"?) ?.+?"],
+            'City': [r"(state_id)=(\"?.+\"?) ?.+?", r"(name)=(\"?[a-zA-Z]+\"?)? ?.+?"]
         }
             # state_id = ""
             # name = ""
@@ -136,14 +136,20 @@ class HBNBCommand(cmd.Cmd):
                 print("** class doesn't exist **")
                 return
             if (params):
+                #print(params.split(" "))
                 re = regex_dict[cls_name]
-                res = search(re[0], params.strip())
-                if (res):    
-                    for i in range(1, re[1], 2):
-                        try:   
-                            kwargs.update({res.group(i): res.group(i + 1).strip().replace('"',"")})
-                        except:
-                            pass
+                #res = search(re[0], params.strip())
+                for i in params.split(" "):
+                    for j in re:
+                        attr = search(j, i)
+                        if (attr):
+                            kwargs.update({attr.group(1):attr.group(2).replace('"', "")})
+                # if (res):    
+                #     for i in range(1, re[1], 2):
+                #         try:   
+                #             kwargs.update({res.group(i): res.group(i + 1).strip().replace('"',"")})
+                #         except:
+                #             pass
                 print(kwargs)             
             # params = result.group(2)
 
@@ -152,13 +158,13 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class doesn't exist **")
             return
-        # exit()
+        #exit()
 
         # elif args not in HBNBCommand.classes:
         #     print("** class doesn't exist **")
         #     return
         new_instance = HBNBCommand.classes[cls_name]()
-        storage.save()
+        #storage.save()
         new_instance.__dict__.update(**kwargs)
         print(new_instance.id)
         storage.save()
