@@ -120,14 +120,14 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        print(args)
-        name=re.compile("((?:first_|last_)name)=(\"?[a-zA-Z]+_?[a-zA-z]+\"?) ?.+?")
-        idi=re.compile("((?:state|city|user|place)_id)=(\"?.+\"?) ?.+?")
-        description = re.compile("(password|description|text)=(\"?.+\"?) ?.+?")
-        num = re.compile("(number_(?:rooms|bathrooms))=(\"?\d+\"?) ?.+?")
-        guest = re.compile("(max_guest)=(\"?\d+\"?) ?.+?")
-        price = re.compile("(price_by_night)=(\"?\d+\"?) ?.+?")
-        lat_lon = re.compile("(latitude|longitude)=(-?[0-9]+\.[0-9]+) ?.+?")
+        
+        name=re.compile("((?:first_|last_)?name)=(\"?[a-zA-Z]+_?[a-zA-z]+\"?)")
+        idi=re.compile("((?:state|city|user|place)_id)=(\"?.+\"?)")
+        description = re.compile("(password|description|text)=(\"?.+\"?)")
+        num = re.compile("(number_(?:rooms|bathrooms))=(\"?\d+\"?)")
+        guest = re.compile("(max_guest)=(\"?\d+\"?)")
+        price = re.compile("(price_by_night)=(\"?\d+\"?)")
+        lat_lon = re.compile("(latitude|longitude)=((?:-|\+)?[0-9]+\.[0-9]+)")
         email=re.compile("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
         regex_dict = {
             'State': [name],
@@ -151,10 +151,12 @@ class HBNBCommand(cmd.Cmd):
                 #print(params.split(" "))
                 res = regex_dict[cls_name]
                 #res = search(re[0], params.strip())
+                #print(params.split(" "))
                 for i in params.split(" "):
                     for j in res:
                         attr = j.search(i)
                         if (attr):
+                            #print(attr.group(2))
                             kwargs.update({attr.group(1):attr.group(2).replace('"', "").replace("_", " ")})
                             break
                 # if (res):    
@@ -163,7 +165,7 @@ class HBNBCommand(cmd.Cmd):
                 #             kwargs.update({res.group(i): res.group(i + 1).strip().replace('"',"")})
                 #         except:
                 #             pass
-                print(kwargs)             
+                #print(kwargs)             
             # params = result.group(2)
 
             # print(params.strip())
