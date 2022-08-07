@@ -148,38 +148,17 @@ class HBNBCommand(cmd.Cmd):
                 print("** class doesn't exist **")
                 return
             if (params):
-                #print(params.split(" "))
                 res = regex_dict[cls_name]
-                #res = search(re[0], params.strip())
-                #print(params.split(" "))
                 for i in params.split(" "):
                     for j in res:
                         attr = j.search(i)
                         if (attr):
-                            #print(attr.group(2))
                             kwargs.update({attr.group(1):attr.group(2).replace('"', "").replace("_", " ")})
                             break
-                # if (res):    
-                #     for i in range(1, re[1], 2):
-                #         try:   
-                #             kwargs.update({res.group(i): res.group(i + 1).strip().replace('"',"")})
-                #         except:
-                #             pass
-                #print(kwargs)             
-            # params = result.group(2)
-
-            # print(params.strip())
-            # print(cls_name)
         else:
             print("** class doesn't exist **")
             return
-        #exit()
-
-        # elif args not in HBNBCommand.classes:
-        #     print("** class doesn't exist **")
-        #     return
         new_instance = HBNBCommand.classes[cls_name]()
-        #storage.save()
         new_instance.__dict__.update(**kwargs)
         print(new_instance.id)
         storage.save()
