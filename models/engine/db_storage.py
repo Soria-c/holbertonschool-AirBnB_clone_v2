@@ -34,7 +34,7 @@ class DBStorage:
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
         
-        classes = [State, City]
+        classes = [State, City, User, Place, Review]
         cls_all = []
         for i in classes:
             cls_all.extend(self.__session.query(i).all())

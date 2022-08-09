@@ -128,7 +128,7 @@ class HBNBCommand(cmd.Cmd):
         guest = re.compile("(max_guest)=(\"?\d+\"?)")
         price = re.compile("(price_by_night)=(\"?\d+\"?)")
         lat_lon = re.compile("(latitude|longitude)=((?:-|\+)?[0-9]+\.[0-9]+)")
-        email=re.compile("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
+        email=re.compile("(email)=([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)")
         regex_dict = {
             'State': [name],
             'City': [idi, name],
@@ -150,7 +150,6 @@ class HBNBCommand(cmd.Cmd):
             if (params):
                 res = regex_dict[cls_name]
                 for i in params.split(" "):
-                    print(i.replace('"', ""))
                     for j in res:
                         attr = j.search(i.replace('"', ""))
                         if (attr):
@@ -161,6 +160,7 @@ class HBNBCommand(cmd.Cmd):
             return
         new_instance = HBNBCommand.classes[cls_name]()
         new_instance.__dict__.update(**kwargs)
+        
         print(new_instance.id)
         storage.new(new_instance)
         storage.save()
