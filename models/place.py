@@ -5,6 +5,13 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer, ForeignKey, Float
 import models
 from sqlalchemy.orm import relationship
+from sqlalchemy import Table
+
+place_amenity = Table('place_amenity', Base.metadata,
+    Column('place_id', String(60), ForeignKey('places.id'), primary_key=True, nullable=False),
+    Column('amenity_id', String(60), ForeignKey('amenities.id'), primary_key=True, nullable=False)
+)
+
 
 class Place(BaseModel, Base):
     """ Class Place """
@@ -22,6 +29,7 @@ class Place(BaseModel, Base):
     longitude = Column(Float, nullable=True)
     amenity_ids = []
     reviews = relationship("Review", backref="place", cascade="all, delete")
+    amenities = relationship('Amenity', secondary=place_amenity, viewonly=False, back_populates="place_amenities")
 
     if getenv("HBNB_TYPE_STORAGE") != "db":
         @property
@@ -32,6 +40,15 @@ class Place(BaseModel, Base):
             return list(filter(
                     lambda x: x.place_id == self.id , models.storage.all(
                     models.Review).values()))
+        @property
+        def amenities(self):
+            return Place.amenity_ids
+        
+        @amenities.setter
+        def aminities(self, cls):
+            if (cls.__class__.__name__ == 'Amenity'):
+                Place.amenity_ids.append(cls.id)
+
     #city_id = ""
     #user_id = ""
     #name = ""
