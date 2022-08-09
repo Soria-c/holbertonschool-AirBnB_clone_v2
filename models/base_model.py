@@ -41,7 +41,10 @@ class BaseModel():
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
-        self.updated_at = datetime.now()
+        if getenv("HBNB_TYPE_STORAGE") == "db":    
+            self.updated_at = datetime.utcnow()
+        else:
+            self.updated_at = datetime.now()
         models.storage.new(self)
         models.storage.save()
 

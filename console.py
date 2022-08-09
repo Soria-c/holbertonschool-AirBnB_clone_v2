@@ -124,7 +124,7 @@ class HBNBCommand(cmd.Cmd):
         idi=re.compile("((?:state|city|user|place)_id)=(\"?.+\"?)")
         description = re.compile("(password|description|text)=(\"?.+\"?)")
         num = re.compile("(number_(?:rooms|bathrooms))=(\"?\d+\"?)")
-        guest = re.compile("(max_guest)=(\"?\d+\"?)")
+        guest = re.compile("(max_guest)=-?(\"?\d+\"?)")
         price = re.compile("(price_by_night)=(\"?\d+\"?)")
         lat_lon = re.compile("(latitude|longitude)=((?:-|\+)?[0-9]+\.[0-9]+)")
         email=re.compile("(email)=([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)")
