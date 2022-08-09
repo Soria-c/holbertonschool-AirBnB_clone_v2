@@ -5,13 +5,18 @@ import models
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, DateTime
 from datetime import datetime
-Base = declarative_base()
+from os import getenv
+if getenv("HBNB_TYPE_STORAGE") == "db":    
+    Base = declarative_base()
+else:
+    Base = object
 
-class BaseModel:
+class BaseModel():
     """A base class for all hbnb models"""
-    id = Column(String(60), primary_key=True, nullable=False)
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
-    update_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+    if getenv("HBNB_TYPE_STORAGE") == "db":    
+        id = Column(String(60), primary_key=True, nullable=False)
+        created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+        update_at = Column(DateTime, nullable=False, default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
