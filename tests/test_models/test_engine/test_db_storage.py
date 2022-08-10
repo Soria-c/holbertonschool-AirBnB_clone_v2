@@ -15,12 +15,15 @@ from os import getenv
 import MySQLdb
 import mysql.connector
 
+
 class TestDBStorage(unittest.TestCase):
     """Class for test the BaseModel Class method and atributes"""
     def setUp(self):
         """All variables that we need"""
         self.dbstorage = DBStorage()
-
+        Base.create_all(self.dbstorage)
+        Session = sessionmaker(bind=self.dbstorage)
+        session = Session()
     def test_dbstorage_all(self):
         self.assertTrue(type(self.dbstorage.all() is dict))
 
@@ -28,9 +31,15 @@ class TestDBStorage(unittest.TestCase):
         """ sets in __objects the obj with key <obj class name>.id"""
        state = State()
        state.name = "California"
-       dbstorage.new()
-       self.assertTrue(type(state.id) is str)
+       dbstorage.new(state)
+       self.assertInInstance(state, State)
 
+    def test_dbstorage_save(self):
+        """Create all tablexists
+        ; otherwise, do nothing. If the file doesn’t exist"""
+        dbstorage.save()
+        self.assertTrue(type(state.id) is str)
+        
     def test_dbstorage_reload(self):
         """Create all tablexists
         ; otherwise, do nothing. If the file doesn’t exist"""
@@ -39,7 +48,7 @@ class TestDBStorage(unittest.TestCase):
     def tearDown(self):
         """Closing the test class and deleteing the instance
             created for testing"""
-        pass
+        session.close()
 
 
 if __name__ == '__main__':
