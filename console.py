@@ -11,8 +11,9 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 from sys import exit
-#from re import search
 import re
+
+
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
@@ -74,7 +75,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] == '{' and pline[-1] =='}'\
+                    if pline[0] == '{' and pline[-1] == '}'\
                             and type(eval(pline)) == dict:
                         _args = pline
                     else:
@@ -119,22 +120,24 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        
-        name=re.compile("((?:first_|last_)?name)=(\"?[a-zA-Z]+_?[a-zA-z]+\"?)")
-        idi=re.compile("((?:state|city|user|place)_id)=(\"?.+\"?)")
-        description = re.compile("(password|description|text)=(\"?.+\"?)")
-        num = re.compile("(number_(?:rooms|bathrooms))=(\"?\d+\"?)")
-        guest = re.compile("(max_guest)=-?(\"?\d+\"?)")
-        price = re.compile("(price_by_night)=(\"?\d+\"?)")
-        lat_lon = re.compile("(latitude|longitude)=((?:-|\+)?[0-9]+\.[0-9]+)")
-        email=re.compile("(email)=([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)")
+
+        name = re.\
+            compile(r"((?:first_|last_)?name)=(\"?[a-zA-Z]+_?[a-zA-z]+\"?)")
+        idi = re.compile(r"((?:state|city|user|place)_id)=(\"?.+\"?)")
+        description = re.compile(r"(password|description|text)=(\"?.+\"?)")
+        num = re.compile(r"(number_(?:rooms|bathrooms))=(\"?\d+\"?)")
+        guest = re.compile(r"(max_guest)=-?(\"?\d+\"?)")
+        price = re.compile(r"(price_by_night)=(\"?\d+\"?)")
+        lat_lon = re.compile(r"(latitude|longitude)=((?:-|\+)?[0-9]+\.[0-9]+)")
+        email = re.\
+            compile(r"(email)=([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)")
         regex_dict = {
             'State': [name],
             'City': [idi, name],
             'Place': [idi, name, description, num, guest, price, lat_lon],
             'Amenity': [name],
-            'Review' : [idi, description],
-            'User' : [email, description, name]
+            'Review': [idi, description],
+            'User': [email, description, name]
 
         }
         regex = r"^([a-zA-Z]+) ?(.+)?"
@@ -152,14 +155,15 @@ class HBNBCommand(cmd.Cmd):
                     for j in res:
                         attr = j.search(i.replace('"', ""))
                         if (attr):
-                            kwargs.update({attr.group(1):attr.group(2).replace('"', "").replace("_", " ")})
+                            kwargs.update({attr.group(1): attr.group(2).replace
+                                    ('"', "").replace("_", " ")})
                             break
         else:
             print("** class doesn't exist **")
             return
         new_instance = HBNBCommand.classes[cls_name]()
         new_instance.__dict__.update(**kwargs)
-        
+
         print(new_instance.id)
         storage.new(new_instance)
         storage.save()
@@ -358,6 +362,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
