@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 """ City Module for HBNB project """
-from models.base_model import BaseModel, Base 
+from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 from os import getenv
 
+
 class City(BaseModel, Base):
-    """class definition of a City"""
+    """City model"""
     if getenv("HBNB_TYPE_STORAGE") == "db":
         __tablename__ = 'cities'
         name = Column(String(128), nullable=False)

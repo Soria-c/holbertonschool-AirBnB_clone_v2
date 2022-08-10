@@ -9,13 +9,16 @@ from sqlalchemy import Table
 
 if getenv("HBNB_TYPE_STORAGE") == "db":
     place_amenity = Table('place_amenity', Base.metadata,
-            Column('place_id', String(60), ForeignKey('places.id'), primary_key=True, nullable=False),
-            Column('amenity_id', String(60), ForeignKey('amenities.id'), primary_key=True, nullable=False)
-)
+                          Column('place_id', String(60),
+                                 ForeignKey('places.id'),
+                                 primary_key=True, nullable=False),
+                          Column('amenity_id', String(60),
+                                 ForeignKey('amenities.id'),
+                                 primary_key=True, nullable=False))
 
 
 class Place(BaseModel, Base):
-    """ Class Place """
+    """ Place model """
 
     if getenv("HBNB_TYPE_STORAGE") == "db":
         __tablename__ = "places"
@@ -30,9 +33,12 @@ class Place(BaseModel, Base):
         latitude = Column(Float, nullable=True)
         longitude = Column(Float, nullable=True)
         amenity_ids = []
-        reviews = relationship("Review", backref="place", cascade="all, delete")
-        amenities = relationship('Amenity', secondary=place_amenity, viewonly=False, back_populates="place_amenities")
-    else: 
+        reviews = relationship("Review", backref="place",
+                               cascade="all, delete")
+        amenities = relationship('Amenity', secondary=place_amenity,
+                                 viewonly=False,
+                                 back_populates="place_amenities")
+    else:
         city_id = ""
         user_id = ""
         name = ""
@@ -48,18 +54,19 @@ class Place(BaseModel, Base):
     if getenv("HBNB_TYPE_STORAGE") != "db":
         @property
         def reviews(self):
-            """Getter attribute that 
+            """Getter attribute that
             returns a list of Review instances
             with place_id equals to the current Place.id """
-            return list(filter(
-                    lambda x: x.place_id == self.id , models.storage.all(
-                    models.Review).values()))
+            return list(filter(lambda x: x.place_id == self.id,
+                               models.storage.all(models.Review).values()))
+
         @property
         def amenities(self):
+            """Amenities getter"""
             return Place.amenity_ids
-        
+
         @amenities.setter
         def amenities(self, cls):
+            """Amenities setter"""
             if (cls.__class__.__name__ == 'Amenity'):
                 Place.amenity_ids.append(cls.id)
-

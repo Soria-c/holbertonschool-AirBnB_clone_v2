@@ -130,7 +130,7 @@ class HBNBCommand(cmd.Cmd):
         price = re.compile(r"(price_by_night)=(\"?\d+\"?)")
         lat_lon = re.compile(r"(latitude|longitude)=((?:-|\+)?[0-9]+\.[0-9]+)")
         email = re.\
-            compile(r"(email)=([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)")
+            compile(r"(email)=([a-zA-Z\d_.+-]+@[a-zA-Z\d]+\.[a-zA-Z\d.]+)")
         regex_dict = {
             'State': [name],
             'City': [idi, name],
@@ -155,8 +155,8 @@ class HBNBCommand(cmd.Cmd):
                     for j in res:
                         attr = j.search(i.replace('"', ""))
                         if (attr):
-                            kwargs.update({attr.group(1): attr.group(2).replace
-                                    ('"', "").replace("_", " ")})
+                            kwargs.update({attr.group(1): attr.group(2).
+                                          replace('"', "").replace("_", " ")})
                             break
         else:
             print("** class doesn't exist **")
