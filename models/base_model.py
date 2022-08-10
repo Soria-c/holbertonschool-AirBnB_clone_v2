@@ -6,17 +6,20 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, DateTime
 from datetime import datetime
 from os import getenv
-if getenv("HBNB_TYPE_STORAGE") == "db":    
+if getenv("HBNB_TYPE_STORAGE") == "db":
     Base = declarative_base()
 else:
     Base = object
 
+
 class BaseModel():
     """A base class for all hbnb models"""
-    if getenv("HBNB_TYPE_STORAGE") == "db":    
+    if getenv("HBNB_TYPE_STORAGE") == "db":
         id = Column(String(60), primary_key=True, nullable=False)
-        created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
-        updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+        created_at = Column(DateTime, nullable=False,
+                            default=datetime.utcnow())
+        updated_at = Column(DateTime, nullable=False,
+                            default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
@@ -32,7 +35,6 @@ class BaseModel():
                     self.__dict__[key] = datetime.fromisoformat(value)
                 elif key != '__class__':
                     self.__dict__[key] = value
-    
 
     def __str__(self):
         """Returns a string representation of the instance"""
@@ -41,7 +43,7 @@ class BaseModel():
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
-        if getenv("HBNB_TYPE_STORAGE") == "db":    
+        if getenv("HBNB_TYPE_STORAGE") == "db":
             self.updated_at = datetime.utcnow()
         else:
             self.updated_at = datetime.now()
