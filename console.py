@@ -159,7 +159,6 @@ class HBNBCommand(cmd.Cmd):
             return
         new_instance = HBNBCommand.classes[cls_name]()
         new_instance.__dict__.update(**kwargs)
-        
         print(new_instance.id)
         storage.new(new_instance)
         storage.save()
@@ -248,7 +247,7 @@ class HBNBCommand(cmd.Cmd):
                 if k.split('.')[0] == args:
                     print_list.append(v)
         else:
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all().items():
                 print_list.append(v)
 
         for i in print_list:
