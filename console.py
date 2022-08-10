@@ -248,10 +248,11 @@ class HBNBCommand(cmd.Cmd):
                 if k.split('.')[0] == args:
                     print_list.append(v)
         else:
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all().items():
                 print_list.append(v)
         if print_list:
-            print(print_list)
+            for i in print_list:
+                print(i)
 
     def help_all(self):
         """ Help information for the all command """
