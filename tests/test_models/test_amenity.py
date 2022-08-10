@@ -2,7 +2,8 @@
 """ """
 from tests.test_models.test_base_model import test_basemodel
 from models.amenity import Amenity
-
+import os
+import unittest
 
 class test_Amenity(test_basemodel):
     """ """
@@ -12,7 +13,7 @@ class test_Amenity(test_basemodel):
         super().__init__(*args, **kwargs)
         self.name = "Amenity"
         self.value = Amenity
-
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") == 'db', "not testing fl storage")
     def test_name2(self):
         """ """
         new = self.value()

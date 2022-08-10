@@ -1,19 +1,35 @@
 #!/usr/bin/python3
 """ """
-from tests.test_models.test_base_model import test_basemodel
-from models.state import State
+import subprocess
+import MySQLdb
+import unittest
+import os
+
+conn_params = {
+    'user': os.getenv("HBNB_MYSQL_USER"),
+    'passwd': os.getenv("HBNB_MYSQL_PWD"),
+    'host': os.getenv("HBNB_MYSQL_HOST"),
+    'db': os.getenv("HBNB_MYSQL_DB"),
+    'port': 3306
+}
 
 
-class test_state(test_basemodel):
+class test_state(unittest.TestCase):
     """ """
+    cursor = None
 
-    def __init__(self, *args, **kwargs):
-        """ """
-        super().__init__(*args, **kwargs)
-        self.name = "State"
-        self.value = State
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") != 'db', "not testing db storage")
+    def setUp(self):
+        conn = MySQLdb.connect(**conn_params)
+        test_state.cursor = conn.cursor()
+        query = "CREATE DATABASE IF NOT EXISTS hbnb_test_db"
+        test_state.cursor.execute(query)
 
-    def test_name3(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.name), str)
+
+    @unittest.skipIf(os.getenv("HBNB_TYPE_STORAGE") != 'db', "not testing fl storage")
+    def test_sql(self):
+        
+        query = "SELECT COUNT(*) FROM states"
+        test_state.cursor.execute(query)
+        self.assertEqual(0, list(test_state.cursor)[0][0])
+
