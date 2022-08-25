@@ -18,7 +18,7 @@ def do_deploy(archive_path):
 
         put(archive_path, '/tmp')
         run('mkdir -p {}'.format(dir_name))
-        run('tar -zvxf /tmp/{} -C {}'.format(file_name, dir_name))
+        run('tar -zxf /tmp/{} -C {}'.format(file_name, dir_name))
         run('sudo rm /tmp/{}'.format(file_name))
         run('rm /data/web_static/current')
         run('ln -sf {} /data/web_static/current'.format(dir_name))
