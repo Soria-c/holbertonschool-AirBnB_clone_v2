@@ -23,7 +23,7 @@ def do_deploy(archive_path):
         run('rm -f /data/web_static/current')
         run('ln -sf {} /data/web_static/current'.format(dir_name))
         run('mv {}/web_static/* {}'.format(dir_name, dir_name))
-        run('rm -rf {}/web_static/'.format(dir_name))
+        run('rm -rf {}/web_static'.format(dir_name))
         print('New version deployed!')
         return True
     except Exception:
