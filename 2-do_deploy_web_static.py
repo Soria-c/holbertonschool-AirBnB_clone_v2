@@ -18,12 +18,12 @@ def do_deploy(archive_path):
 
         put(archive_path, '/tmp')
         run('mkdir -p {}'.format(dir_name))
-        run('tar -zvxf /tmp/{} -C {}'.format(file_name, dir_name))
-        run('sudo rm /tmp/{}'.format(file_name))
-        run('rm /data/web_static/current')
+        run('tar -zxf /tmp/{} -C {}'.format(file_name, dir_name))
+        run('rm -f /tmp/{}'.format(file_name))
+        run('rm -f /data/web_static/current')
         run('ln -sf {} /data/web_static/current'.format(dir_name))
         run('mv {}/web_static/* {}'.format(dir_name, dir_name))
-        run('rm -r {}/web_static/'.format(dir_name))
+        run('rm -rf {}/web_static'.format(dir_name))
         print('New version deployed!')
         return True
     except Exception:
